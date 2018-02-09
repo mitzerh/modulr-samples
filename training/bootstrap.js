@@ -9,7 +9,7 @@
         // base domain url
         baseDomain: '//' + window.location.host,
         // base pathname
-        baseUrl: "/misc/modulr/training/app",
+        baseUrl: "/misc/modulr/samples/training/app",
         // master file
         masterFile: "",
         // other package paths
