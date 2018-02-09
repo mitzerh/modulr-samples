@@ -7,7 +7,7 @@
         // unique instance identifier
         instance: "trainging.app",
         // base domain url
-        baseDomain: '//' + window.location.host,
+        baseDomain: 'https://www.hmabesa.com',
         // base pathname
         baseUrl: "/misc/modulr/samples/training/app",
         // master file
