@@ -1,4 +1,4 @@
-Modulr.define('trainging.app:api', [
+Modulr.define('training.app:api', [
     'require'
 ], function(require){
 

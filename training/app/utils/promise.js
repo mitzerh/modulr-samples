@@ -1,4 +1,4 @@
-Modulr.define('trainging.app:utils/promise', [
+Modulr.define('training.app:utils/promise', [
     'require'
 ], function(require){
 

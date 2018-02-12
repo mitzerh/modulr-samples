@@ -1,4 +1,4 @@
-Modulr.define('trainging.app:models/base.property', [
+Modulr.define('training.app:models/base.property', [
     'require'
 ], function(require){
 

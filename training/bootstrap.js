@@ -1,11 +1,11 @@
 (function(Modulr){
 
     // check if instance already instantiated
-    if (Modulr.getInstance('trainging.app')) { return false; }
+    if (Modulr.getInstance('training.app')) { return false; }
 
     var Instance = Modulr.config({
         // unique instance identifier
-        instance: "trainging.app",
+        instance: "training.app",
         // base domain url
         baseDomain: 'https://www.hmabesa.com',
         // base pathname

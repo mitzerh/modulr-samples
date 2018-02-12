@@ -1,4 +1,4 @@
-Modulr.define('trainging.app:models/auto', [
+Modulr.define('training.app:models/auto', [
     'require',
     'lodash',
     'helper',
