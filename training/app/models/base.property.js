@@ -66,7 +66,7 @@ Modulr.define('training.app:models/base.property', [
                 },
                 // check if custom validation
                 function() {
-                    return propInfo.validate(val);
+                    return (!propInfo.validate) ? true : propInfo.validate(val);
                 }
             ];
 

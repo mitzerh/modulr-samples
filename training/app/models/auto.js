@@ -38,7 +38,6 @@ Modulr.define('training.app:models/auto', [
                 return (/[0-9]{4}/.test(val) && /^(19|20)/.test(val) && val >= 1990 && val <= (new Date()).getFullYear()+1) ? true : false;
             }
         }
-
     };
 
     var Model = function() {

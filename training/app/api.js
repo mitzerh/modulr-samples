@@ -3,8 +3,10 @@ Modulr.define('training.app:api', [
 ], function(require){
 
     var API = {
-        getAutoModel: function(callback) {
-            require(['models/auto']).then(function(model){
+        getModel: function(type, callback) {
+            var allow = ['auto', 'house'];
+            if (allow.indexOf(type) === -1) { alert('model not found:' + type); return; }
+            require(['models/' + type]).then(function(model){
                 callback(model);
             });
         }
