@@ -1,9 +1,8 @@
 Modulr.define('training.app:models/house', [
     'require',
     'lodash',
-    'helper',
     'models/base.property'
-], function(require, _, Helper, BaseProperty){
+], function(require, _, BaseModel){
 
     var ALLOWED_PROPERTIES = {
         // list price
@@ -14,9 +13,11 @@ Modulr.define('training.app:models/house', [
         'area': {
             type: 'number'
         },
-        'status': {
-            type: 'string',
-            allowed: ['sell', 'foreclose', 'shortsale']
+        'address': {
+            type: 'string'
+        },
+        'zip': {
+            type: 'string'
         },
         // number of rooms
         'rooms': {
@@ -48,16 +49,7 @@ Modulr.define('training.app:models/house', [
         }
     };
 
-    var Model = function() {
-        // instantiate from base model
-        var BASE_MODEL = new BaseProperty(ALLOWED_PROPERTIES);
-        // use only function methods
-        for (var prop in BASE_MODEL) {
-            if (BASE_MODEL.hasOwnProperty(prop) && typeof prop === 'function') {
-                this[prop] = BASE_MODEL[prop];
-            }
-        }
-    };
+    var Model = BaseModel(ALLOWED_PROPERTIES);
 
     return Model;
 

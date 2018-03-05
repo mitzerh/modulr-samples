@@ -1,8 +1,9 @@
-Modulr.define('training.app:models/base.property', [
-    'require'
-], function(require){
+Modulr.define('training.app:models/base.model', [
+    'require',
+    'helper'
+], function(require, Helper){
 
-    var Model = function(ALLOWED_PROPERTIES) {
+    var BaseModel = function(ALLOWED_PROPERTIES) {
 
         var Proto = this;
 
@@ -12,14 +13,14 @@ Modulr.define('training.app:models/base.property', [
         Proto.setProperty = function() {
             var args = arguments;
             // key, value
-            if (args[0] === 'string' && typeof args[1] !== 'undefined') {
+            if (typeof args[0] === 'string' && typeof args[1] !== 'undefined') {
                 set(args[0], args[1]);
             } else if (typeof args[0] === 'object') {
                 for (var id in args[0]) {
                     set(id, args[0][id]);
                 }
             } else {
-                Helper.log('error setting value: key('+key+') = value('+val+')');
+                Helper.log('error setting value:', args);
             }
 
             function set(key, val) {
@@ -32,11 +33,20 @@ Modulr.define('training.app:models/base.property', [
         };
 
         Proto.getProperty = function(key) {
-            return propExists(key);
+            var res;
+            if (!key) {
+                res = {};
+                for (var id in MODEL_PROPERTIES) {
+                    res[id] = MODEL_PROPERTIES[id]; // shallow clone
+                }
+            } else {
+                res = propExists(key) ? MODEL_PROPERTIES[key] : null;
+            }
+            return res;
         };
 
         Proto.getPropertyList = function() {
-            if (!PROP_LIST) {
+            if (PROP_LIST.length === 0) {
                 var arr = [];
                 for (var id in ALLOWED_PROPERTIES) {
                     arr.push(id);
@@ -58,7 +68,7 @@ Modulr.define('training.app:models/base.property', [
             var checks = [
                 // check type
                 function() {
-                    return (typeof key === propInfo.type) ? true : false;
+                    return (typeof val === propInfo.type) ? true : false;
                 },
                 // check allowed values
                 function() {
@@ -88,6 +98,21 @@ Modulr.define('training.app:models/base.property', [
 
     };
 
-    return Model;
+    return function(ALLOWED_PROPERTIES) {
+
+        var Model = function() {
+            var self = this;
+            // instantiate from base model
+            var BASE_MODEL = new BaseModel(ALLOWED_PROPERTIES);
+            // use only function methods
+            for (var prop in BASE_MODEL) {
+                if (BASE_MODEL.hasOwnProperty(prop) && typeof prop === 'function') {
+                    self[prop] = BASE_MODEL[prop];
+                }
+            }
+        };
+
+        return Model;
+    };
 
 });

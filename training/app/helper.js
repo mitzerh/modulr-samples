@@ -1,4 +1,4 @@
-Modulr.define('trainging.app:helper', [
+Modulr.define('training.app:helper', [
     'require'
 ], function(require){
 

@@ -1,14 +1,14 @@
 Modulr.define('training.app:api', [
-    'require'
+    'require',
+    'models/auto',
+    'models/house'
 ], function(require){
 
     var API = {
-        getModel: function(type, callback) {
+        getModel: function(type) {
             var allow = ['auto', 'house'];
             if (allow.indexOf(type) === -1) { alert('model not found:' + type); return; }
-            require(['models/' + type]).then(function(model){
-                callback(model);
-            });
+            return require('models/' + type);
         }
     };
 

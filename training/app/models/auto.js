@@ -1,9 +1,8 @@
 Modulr.define('training.app:models/auto', [
     'require',
     'lodash',
-    'helper',
-    'models/base.property'
-], function(require, _, Helper, BaseProperty){
+    'models/base.model'
+], function(require, _, BaseModel){
 
     var ALLOWED_PROPERTIES = {
         'make': {
@@ -40,16 +39,7 @@ Modulr.define('training.app:models/auto', [
         }
     };
 
-    var Model = function() {
-        // instantiate from base model
-        var BASE_MODEL = new BaseProperty(ALLOWED_PROPERTIES);
-        // use only function methods
-        for (var prop in BASE_MODEL) {
-            if (BASE_MODEL.hasOwnProperty(prop) && typeof prop === 'function') {
-                this[prop] = BASE_MODEL[prop];
-            }
-        }
-    };
+    var Model = new BaseModel(ALLOWED_PROPERTIES);
 
     return Model;
 
