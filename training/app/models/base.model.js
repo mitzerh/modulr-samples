@@ -21,13 +21,12 @@ Modulr.define('training.app:models/base.model', [
                 }
             } else {
                 Helper.log('error setting value:', args);
+                throw new Error('error setting value, check log');
             }
 
             function set(key, val) {
                 if (validateVal(key, val)) {
                     MODEL_PROPERTIES[key] = val;
-                } else {
-                    Helper.log('invalid property value:', key, '=', val);
                 }
             }
         };
@@ -68,22 +67,30 @@ Modulr.define('training.app:models/base.model', [
             var checks = [
                 // check type
                 function() {
-                    return (typeof val === propInfo.type) ? true : false;
+                    return (typeof val === propInfo.type) ? true : ('must be of type: ' + propInfo.type);
                 },
                 // check allowed values
                 function() {
-                    return (!propInfo.allowed) ? true : (propInfo.allowed && propInfo.allowed.indexOf(val) > -1) ? true : false;
+                    return (!propInfo.allowed) ? true : (propInfo.allowed && propInfo.allowed.indexOf(val) > -1) ? true : ('allowed values: ' + propInfo.allowed.join(', '));
                 },
                 // check if custom validation
                 function() {
-                    return (!propInfo.validate) ? true : propInfo.validate(val);
+                    var ret = true;
+                    if (propInfo.validate) {
+                        var resp = propInfo.validate(val);
+                        if (typeof resp === 'string') {
+                            ret = resp;
+                        }
+                    }
+                    return ret;
                 }
             ];
 
             for (var i = 0; i < checks.length; i++) {
-                if (!checks[i]()) {
+                var checkVal = checks[i]();
+                if (checkVal !== true) {
                     ret = false;
-                    break;
+                    throw 'validation error: [property=' + key + '] ' + checkVal;
                 }
             }
 
@@ -98,19 +105,24 @@ Modulr.define('training.app:models/base.model', [
 
     };
 
-    return function(ALLOWED_PROPERTIES) {
+    return function(name, ALLOWED_PROPERTIES) {
+
+        // instantiate from base model
+        var BASE_MODEL = new BaseModel(ALLOWED_PROPERTIES);
 
         var Model = function() {
             var self = this;
-            // instantiate from base model
-            var BASE_MODEL = new BaseModel(ALLOWED_PROPERTIES);
             // use only function methods
             for (var prop in BASE_MODEL) {
-                if (BASE_MODEL.hasOwnProperty(prop) && typeof prop === 'function') {
+                if (BASE_MODEL.hasOwnProperty(prop) && typeof BASE_MODEL[prop] === 'function' && prop !== 'getPropertyList') {
                     self[prop] = BASE_MODEL[prop];
                 }
             }
         };
+
+        // accessible attributes
+        Model._MODEL_NAME = name;
+        Model._PROPERTY_LIST = BASE_MODEL.getPropertyList();
 
         return Model;
     };

@@ -1,7 +1,7 @@
 Modulr.define('training.app:models/house', [
     'require',
     'lodash',
-    'models/base.property'
+    'models/base.model'
 ], function(require, _, BaseModel){
 
     var ALLOWED_PROPERTIES = {
@@ -17,25 +17,28 @@ Modulr.define('training.app:models/house', [
             type: 'string'
         },
         'zip': {
-            type: 'string'
+            type: 'string',
+            validate: function(val) {
+                return /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(val) ? false : 'invalid zip code';
+            }
         },
         // number of rooms
         'rooms': {
             type: 'number',
             validate: function(val) {
                 // whole numbers only
-                return (val % 1 === 0) ? true : false;
+                return (val % 1 === 0) ? false : 'whole numbers only';
             }
         },
         // number of baths
         'baths': {
             type: 'number',
             validate: function(val) {
-                var ret = true;
+                var ret = false;
                 var whole = (val % 1 === 0) ? true : false;
                 // only allow halves - 1.5, 2.5, etc
                 if (!whole) {
-                    if (val % 0.5 !== 0) { ret = false; }
+                    if (val % 0.5 !== 0) { ret = 'half baths allowed only'; }
                 }
                 return ret;
             }
@@ -44,12 +47,18 @@ Modulr.define('training.app:models/house', [
         'built': {
             type: 'number',
             validate: function(val) {
-                return /^[0-9]{4,4}$/.test(val) ? true : false;
+                val = parseInt(val, 10);
+                // numeric
+                // range 1950 to current year + 1
+                return (/[0-9]{4}/.test(val)
+                    && /^(19|20)/.test(val)
+                    && val >= 1910
+                    && val <= (new Date()).getFullYear()+1) ? false : 'must be a valid year starting 1910';
             }
         }
     };
 
-    var Model = BaseModel(ALLOWED_PROPERTIES);
+    var Model = new BaseModel('house', ALLOWED_PROPERTIES);
 
     return Model;
 
